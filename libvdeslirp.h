@@ -2,6 +2,10 @@
 #define VDESLIRP_H
 #include <slirp/libslirp.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct vdeslirp;
 
 #define VDE_INIT_DEFAULT 1
@@ -31,5 +35,9 @@ int vdeslirp_add_cmdexec(struct vdeslirp *slirp, const char *cmdline,
     struct in_addr *guest_addr, int guest_port);
 int vdeslirp_remove_cmdexec(struct vdeslirp *slirp,
     struct in_addr guest_addr, int guest_port);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
