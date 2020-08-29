@@ -12,7 +12,7 @@ include(CheckIncludeFile)
 include(CheckSymbolExists)
 
 set(LIBS_REQUIRED slirp pthread)
-set(HEADERS_REQUIRED libvdeplug.h slirp/libslirp.h)
+set(HEADERS_REQUIRED slirp/libslirp.h)
 set(CMAKE_REQUIRED_QUIET TRUE)
 set(CMAKE_REQUIRED_LIBRARIES slirp)
 
@@ -28,18 +28,18 @@ foreach(THISLIB IN LISTS LIBS_REQUIRED)
 endforeach(THISLIB)
 
 foreach(HEADER IN LISTS HEADERS_REQUIRED)
-  check_include_file(${HEADER} ${HEADER}_OK)
+  find_path(${HEADER}_OK ${HEADER})
   if(NOT ${HEADER}_OK)
     message(FATAL_ERROR "header file ${HEADER} not found")
   endif()
+  include_directories(${${HEADER}_OK})
 endforeach(HEADER)
 
 add_definitions(-D_GNU_SOURCE)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(vdeslirp SHARED libvdeslirp.c)
-target_link_libraries(vdeslirp -lslirp -lpthread)
+target_link_libraries(vdeslirp ${LIBslirp_OK} pthread)
 
 set_target_properties(vdeslirp PROPERTIES VERSION ${PROJECT_VERSION}
 		SOVERSION ${PROJECT_VERSION_MAJOR})
